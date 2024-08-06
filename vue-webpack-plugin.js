@@ -15,6 +15,13 @@ async function maybeUseVue() {
                 test: /\.js$/,
                 loader: require.resolve('babel-loader'),
                 exclude: /node_modules/
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    'vue-style-loader',
+                    'css-loader'
+                ]
             }
         ],
     }

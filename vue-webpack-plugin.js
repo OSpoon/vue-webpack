@@ -23,7 +23,11 @@ async function maybeUseVue() {
 module.exports = class VueWebpackPlugin {
 
     /**
-     * before
+     * before: 
+     * Run `npm run build`:
+     * ERROR in ./src/App.vue 1:0
+     *  Module parse failed: Unexpected token (1:0)
+     *  You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file.
      * @param {*} compiler 
      */
     // async apply(compiler) {

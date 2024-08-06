@@ -57,16 +57,13 @@ module.exports = class VueWebpackPlugin {
             maybeInstallVue?.plugins?.forEach((plugin) => plugin.apply(compiler))
         }
 
-        // Executes a plugin during watch mode after a new compilation is triggered but before the compilation is actually started.
-        compiler.hooks.watchRun.tapPromise('VueWebpackPlugin', async (_) => {
-            console.log('===watchRun===')
-            await loadVueConfig()
-        });
-
         // Adds a hook right before running the compiler.
-        compiler.hooks.beforeRun.tapPromise('VueWebpackPlugin', async (_) => {
-            console.log('===beforeRun===')
-            await loadVueConfig()
-        });
+        if (compiler.options.mode === 'production') {
+            compiler.hooks.beforeRun.tapPromise('VueWebpackPlugin', async (_) => {
+                await loadVueConfig();
+            });
+            return;
+        }
+        await loadVueConfig();
     }
 }

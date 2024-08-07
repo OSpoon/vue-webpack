@@ -1,11 +1,16 @@
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
 /**
  * This function must be asynchronous, as dependencies may be installed
  * @returns 
  */
-async function maybeUseVue() {
+async function maybeUseVue(mode = 'development') {
 
     return {
-        plugins: [new (require('vue-loader').VueLoaderPlugin)],
+        plugins: [
+            new (require('vue-loader').VueLoaderPlugin),
+            new MiniCssExtractPlugin,
+        ],
         loaders: [
             {
                 test: /\.vue$/,
@@ -19,7 +24,9 @@ async function maybeUseVue() {
             {
                 test: /\.css$/,
                 use: [
-                    'vue-style-loader',
+                    mode !== 'production'
+                        ? 'vue-style-loader'
+                        : MiniCssExtractPlugin.loader,
                     'css-loader'
                 ]
             }
@@ -29,32 +36,9 @@ async function maybeUseVue() {
 
 module.exports = class VueWebpackPlugin {
 
-    /**
-     * before: 
-     * Run `npm run build`:
-     * ERROR in ./src/App.vue 1:0
-     *  Module parse failed: Unexpected token (1:0)
-     *  You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file.
-     * @param {*} compiler 
-     */
-    // async apply(compiler) {
-    //     const maybeInstallVue = await maybeUseVue()
-
-    //     compiler.options.module.rules = [
-    //         ...(maybeInstallVue?.loaders || []),
-    //         ...compiler.options.module.rules
-    //     ].filter(Boolean)
-
-    //     maybeInstallVue?.plugins?.forEach((plugin) => plugin.apply(compiler))
-    // }
-
-    /**
-     * after:
-     * @param {*} compiler 
-     */
     async apply(compiler) {
         const loadVueConfig = async () => {
-            const maybeInstallVue = await maybeUseVue()
+            const maybeInstallVue = await maybeUseVue(compiler.options.mode)
 
             compiler.options.module.rules = [
                 ...(maybeInstallVue?.loaders || []),
@@ -64,7 +48,6 @@ module.exports = class VueWebpackPlugin {
             maybeInstallVue?.plugins?.forEach((plugin) => plugin.apply(compiler))
         }
 
-        // Adds a hook right before running the compiler.
         if (compiler.options.mode === 'production') {
             compiler.hooks.beforeRun.tapPromise('VueWebpackPlugin', async (_) => {
                 await loadVueConfig();

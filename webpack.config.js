@@ -13,7 +13,7 @@ module.exports = {
             template: './index.html',
             inject: true
         }),
-        new VueWebpackPlugin()
+        new VueWebpackPlugin(),
     ],
     devServer: {
         static: {

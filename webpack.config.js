@@ -21,5 +21,9 @@ module.exports = {
         },
         hot: true
     },
-    mode: 'development'
+    mode: 'development',
+    experiments: {
+        // You can't use `experiments.css` (`experiments.futureDefaults` enable built-in CSS support by default) and `css-loader` together, please set `experiments.css` to `false` or set `{ type: "javascript/auto" }` for rules with `css-loader` in your webpack config (now css-loader does nothing).
+        css: false,
+    }
 };

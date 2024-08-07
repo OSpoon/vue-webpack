@@ -15,6 +15,10 @@ async function maybeUseVue(mode = 'development') {
             {
                 test: /\.vue$/,
                 loader: require.resolve('vue-loader'),
+                options: {
+                    // `experimentalInlineMatchResource` should be enabled if `experiments.css` enabled currently
+                    experimentalInlineMatchResource: false,
+                },
             },
             {
                 test: /\.js$/,
